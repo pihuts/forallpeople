@@ -227,8 +227,16 @@ class Physical(object):
         # mod_factor is either the original factor or the new default factor
         # if a default look-up was triggered
         symbol, prefix_bool, mod_factor = phf._evaluate_dims_and_factor(
-            dims_orig, factor, power, env_fact, env_dims
+            dims, factor, 1, env_fact, env_dims
         )
+        direct_match = False
+        if symbol:
+            direct_match = True
+
+        if not symbol:
+            symbol, prefix_bool, mod_factor = phf._evaluate_dims_and_factor(
+                dims_orig, factor, power, env_fact, env_dims
+            )
         factor = mod_factor
         float_factor = float(factor)
         # Get the appropriate prefix
@@ -241,12 +249,16 @@ class Physical(object):
             prefix = prefixed
         elif prefix_bool and dims_orig == Dimensions(1, 0, 0, 0, 0, 0, 0):
             kg_bool = True
-            prefix = phf._auto_prefix(val, power, kg=kg_bool)
+            if environment.auto_prefix:
+                prefix = phf._auto_prefix(val, power, kg=kg_bool)
         elif prefix_bool:
-            prefix = phf._auto_prefix(val, power, kg=kg_bool)
+            if environment.auto_prefix:
+                prefix = phf._auto_prefix(val, power, kg=kg_bool)
 
         # Format the exponent (may not be used, though)
         exponent = phf._format_exponent(power, repr_format=template)
+        if direct_match:
+            exponent = ""
 
         # Format the units
         if not symbol and phf._dims_basis_multiple(dims):
@@ -263,8 +275,12 @@ class Physical(object):
         else:
             units = phf._format_symbol(prefix, symbol, repr_format=template)
 
+        if not symbol:
+            float_factor = 1.0
+
         # Determine the appropriate display value
-        value = val * float_factor
+        # value = val * float_factor # This original logic seems incorrect for non-standard factors
+        value = val / float_factor
 
         if prefix_bool:
             # If the quantity has a "pre-fixed" prefix, it will override

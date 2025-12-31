@@ -44,6 +44,7 @@ class Environment:
         self.push_module = None
         if not self.environment:
             self.environment = self._si_base_units
+        self._auto_prefix = True
 
     @property
     def units_by_dimension(self):
@@ -58,6 +59,14 @@ class Environment:
             return self._units_by_factor
 
         return return_dict
+
+    @property
+    def auto_prefix(self):
+        return self._auto_prefix
+
+    @auto_prefix.setter
+    def auto_prefix(self, value: bool):
+        self._auto_prefix = value
 
     def __call__(self, env_name: str = "", top_level: bool = False):
         if not env_name:
@@ -105,7 +114,7 @@ class Environment:
                 self._units_by_dimension["defined"].setdefault(
                     dimension, dict()
                 ).update({name: definition})
-                self._units_by_factor.update({factor: {name: definition}})
+                self._units_by_factor.setdefault(factor, dict()).update({name: definition})
         self.push_module = push_module  # Update previous push_module; could be either module or top-level
 
     def _push_vars(self, units_dict: dict, module: ModuleType) -> None:
@@ -175,13 +184,18 @@ class Environment:
         units_dict = {}
         # Transfer definitions
         for unit, definitions in environment.items():
-            dimensions = definitions["Dimension"]
+            dimensions = Dimensions(*definitions["Dimension"])
             factor = definitions.get("Factor", 1)
             symbol = definitions.get("Symbol", "")
             value = definitions.get("Value", 1)
-            if symbol:
+            # if symbol:
+            #     units_dict.update(
+            #         {unit: physical_class(1 / float(factor), dimensions, factor)}
+            #     )
+            # else:
+            if factor != 1:
                 units_dict.update(
-                    {unit: physical_class(1 / float(factor), dimensions, factor)}
+                    {unit: physical_class(float(factor), dimensions, factor)}
                 )
             else:
                 units_dict.update({unit: physical_class(value, dimensions, factor)})

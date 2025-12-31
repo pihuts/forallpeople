@@ -151,16 +151,25 @@ def _get_units_by_factor(
     equal to 'dims'. Returns an empty dict, otherwise.
     """
     ## TODO Write a pow() to handle fractions and rationals
-    new_factor = fraction_pow(factor, -Fraction(1 / power))
+    ## TODO Write a pow() to handle fractions and rationals
+    
+    # Check for direct match first (e.g. L, mL)
+    units_match = _match_factors(factor, units_env())
+    filtered_match = dict()
+    for name, definition in units_match.items():
+        if definition.get("Dimension") == dims:
+            filtered_match.update({name: definition})
+    if filtered_match:
+        return filtered_match
+
+    # Check for derived match (e.g. cm^2 -> cm)
+    new_factor = fraction_pow(factor, Fraction(1 / power))
     units_match = _match_factors(new_factor, units_env())
-    try:
-        units_name = tuple(units_match.keys())[0]
-    except IndexError:
-        units_name = ""
-    retrieved_dims = units_match.get(units_name, dict()).get("Dimension", dict())
-    if dims != retrieved_dims:
-        return dict()
-    return units_match
+    filtered_match = dict()
+    for name, definition in units_match.items():
+        if definition.get("Dimension") == dims:
+            filtered_match.update({name: definition})
+    return filtered_match
 
 
 def _match_factors(
