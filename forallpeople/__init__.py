@@ -55,7 +55,7 @@ class Physical(object):
     within the BIPM SI unit system.
     """
 
-    __slots__ = ("value", "dimensions", "factor", "precision", "prefixed")
+    __slots__ = ("value", "dimensions", "factor", "precision", "prefixed", "symbol_override")
 
     def __init__(
         self,
@@ -64,6 +64,7 @@ class Physical(object):
         factor: float,
         precision: int = 3,
         prefixed: str = "",
+        symbol_override: str = "",
     ):
         """Constructor"""
         super(Physical, self).__setattr__("value", float(value))
@@ -71,6 +72,7 @@ class Physical(object):
         super(Physical, self).__setattr__("factor", factor)
         super(Physical, self).__setattr__("precision", precision)
         super(Physical, self).__setattr__("prefixed", prefixed)
+        super(Physical, self).__setattr__("symbol_override", symbol_override)
 
     ### API Methods ###
     @property
@@ -188,15 +190,29 @@ class Physical(object):
                 derived_match = derived.get(dims_orig, {}).get(unit_name, {})
                 unit_match = defined_match or derived_match
             
+            # Fallback: check if unit exists as an attribute (for SI base units like m, kg, s)
+            fallback_match = False
+            if not unit_match:
+                # Units are pushed to the module, not the environment instance
+                target_unit = getattr(environment.this_module, unit_name, None)
+                if target_unit is not None and hasattr(target_unit, 'factor'):
+                    # Create a synthetic match from the unit
+                    unit_match = {
+                        "Factor": target_unit.factor,
+                        "Symbol": unit_name
+                    }
+                    fallback_match = True
+            
             if not unit_match:
                 warnings.warn(f"No unit defined for '{unit_name}' on {self}.")
                 return self
             
             new_factor = unit_match.get("Factor", 1)
-            # Don't apply power for direct dimension matches
-            if not (defined.get(dims, {}).get(unit_name) or derived.get(dims, {}).get(unit_name)):
+            unit_symbol = unit_match.get("Symbol", "")
+            # Don't apply power for direct dimension matches or fallback matches
+            if not fallback_match and not (defined.get(dims, {}).get(unit_name) or derived.get(dims, {}).get(unit_name)):
                 new_factor = new_factor ** Fraction(power)
-            return Physical(self.value, self.dimensions, new_factor, self.precision)
+            return Physical(self.value, self.dimensions, new_factor, self.precision, symbol_override=unit_symbol)
 
     def si(self):
         """
@@ -257,6 +273,12 @@ class Physical(object):
             symbol, prefix_bool, mod_factor = phf._evaluate_dims_and_factor(
                 dims_orig, factor, power, env_fact, env_dims
             )
+        
+        # Override symbol if explicitly set via .to()
+        if self.symbol_override:
+            symbol = self.symbol_override
+            direct_match = True
+        
         factor = mod_factor
         float_factor = float(factor)
         # Get the appropriate prefix
