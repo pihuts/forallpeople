@@ -162,20 +162,40 @@ class Physical(object):
         derived = env_dims()["derived"]
         defined = env_dims()["defined"]
         power, dims_orig = phf._powers_of_derived(dims, env_dims)
+        
         if not unit_name:
             print("Available units to convert to: ")
+            # Check full dimensions first (e.g., Volume for L, mL)
+            for key in derived.get(dims, {}):
+                print(key)
+            for key in defined.get(dims, {}):
+                print(key)
+            # Then check base dimensions (e.g., Length for m, km)
             for key in derived.get(dims_orig, {}):
                 print(key)
             for key in defined.get(dims_orig, {}):
                 print(key)
 
         if unit_name:
-            defined_match = defined.get(dims_orig, {}).get(unit_name, {})
-            derived_match = derived.get(dims_orig, {}).get(unit_name, {})
+            # Check full dimensions first (e.g., Volume for L, mL)
+            defined_match = defined.get(dims, {}).get(unit_name, {})
+            derived_match = derived.get(dims, {}).get(unit_name, {})
             unit_match = defined_match or derived_match
+            
+            # If not found, check base dimensions (e.g., Length for m, km)
+            if not unit_match:
+                defined_match = defined.get(dims_orig, {}).get(unit_name, {})
+                derived_match = derived.get(dims_orig, {}).get(unit_name, {})
+                unit_match = defined_match or derived_match
+            
             if not unit_match:
                 warnings.warn(f"No unit defined for '{unit_name}' on {self}.")
-            new_factor = unit_match.get("Factor", 1) ** Fraction(power)
+                return self
+            
+            new_factor = unit_match.get("Factor", 1)
+            # Don't apply power for direct dimension matches
+            if not (defined.get(dims, {}).get(unit_name) or derived.get(dims, {}).get(unit_name)):
+                new_factor = new_factor ** Fraction(power)
             return Physical(self.value, self.dimensions, new_factor, self.precision)
 
     def si(self):

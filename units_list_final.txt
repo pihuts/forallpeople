@@ -1,0 +1,112 @@
+# All Available Units for Conversion
+
+Units are grouped by their physical dimension. You can convert between any units in the same group.
+
+## Dimension (-1, -2, 3, 2, 0, 0, 0) 
+**Units**: S
+
+## Dimension (-1, -2, 4, 2, 0, 0, 0) 
+**Units**: F, pF, uF
+
+## Dimension (0, -2, 0, 0, 1, 0, 0) 
+**Units**: lux
+
+## Dimension (0, 0, -1, 0, 0, 0, 0) 
+**Units**: Hz
+
+## Dimension (0, 0, -1, 0, 0, 0, 1) 
+**Units**: katal
+
+## Dimension (0, 0, 0, 0, 0, 0, 1) 
+**Units**: mol
+
+## Dimension (0, 0, 0, 0, 0, 1, 0) 
+**Units**: Celsius, F, K, dC
+
+## Dimension (0, 0, 0, 0, 1, 0, 0) 
+**Units**: cd
+
+## Dimension (0, 0, 0, 1, 0, 0, 0) (Current)
+**Units**: A, mA
+
+## Dimension (0, 0, 1, 0, 0, 0, 0) (Time)
+**Units**: day, hour, minute, s
+
+## Dimension (0, 0, 1, 1, 0, 0, 0) (Charge)
+**Units**: C
+
+## Dimension (0, 1, 0, 0, 0, 0, 0) (Length)
+**Units**: cm, ft, inch, km, m, mile, mm, yard
+
+## Dimension (0, 2, -2, 0, 0, -1, 0) 
+**Units**: J_kg_K
+
+## Dimension (0, 2, -2, 0, 0, 0, 0) 
+**Units**: Gy, J_kg
+
+## Dimension (0, 2, -1, 0, 0, 0, 0) 
+**Units**: m2_s
+
+## Dimension (0, 2, 0, 0, 0, 0, 0) 
+**Units**: acre
+
+## Dimension (0, 3, 0, 0, 0, 0, 0) 
+**Units**: L, fl_ounce, mL, mm3, quart
+
+## Dimension (0, 4, 0, 0, 0, 0, 0) 
+**Units**: mm4
+
+## Dimension (1, -3, 0, 0, 0, 0, 0) 
+**Units**: kg_m3
+
+## Dimension (1, -2, -2, 0, 0, 0, 0) 
+**Units**: N_m3, kN_m3, kcf, kci, pcf, pci
+
+## Dimension (1, -1, -2, 0, 0, 0, 0) (Pressure)
+**Units**: GPa, MPa, Pa, bar, kN_m2, kPa, ksf, ksi, psf, psi
+
+## Dimension (1, -1, -1, 0, 0, 0, 0) 
+**Units**: Pas, uPas
+
+## Dimension (1, 0, -2, -1, 0, 0, 0) 
+**Units**: T
+
+## Dimension (1, 0, -2, 0, 0, 0, 0) 
+**Units**: N_m, kN_m, kip_ft, lb_ft
+
+## Dimension (1, 0, -1, 0, 0, 0, 0) 
+**Units**: kg_h, kg_s
+
+## Dimension (1, 0, 0, 0, 0, 0, -1) 
+**Units**: g_mol, kg_kmol
+
+## Dimension (1, 0, 0, 0, 0, 0, 0) (Mass)
+**Units**: kg, lbm, ounce
+
+## Dimension (1, 1, -3, 0, 0, -1, 0) 
+**Units**: W_m_K
+
+## Dimension (1, 1, -2, 0, 0, 0, 0) (Force)
+**Units**: MN, N, kN, kip, lb, lbf, ton
+
+## Dimension (1, 2, -3, -2, 0, 0, 0) 
+**Units**: Ohm
+
+## Dimension (1, 2, -3, -1, 0, 0, 0) (Voltage)
+**Units**: V
+
+## Dimension (1, 2, -3, 0, 0, 0, 0) (Power)
+**Units**: W
+
+## Dimension (1, 2, -2, -2, 0, 0, 0) 
+**Units**: H
+
+## Dimension (1, 2, -2, -1, 0, 0, 0) 
+**Units**: Wb
+
+## Dimension (1, 2, -2, 0, 0, 0, 0) (Energy)
+**Units**: J, MJ, Nm, kipft, kipin, lbft, lbin
+
+## Dimension (1, 3, -2, 0, 0, 0, 0) 
+**Units**: Nm2, kft2, lbft2
+
